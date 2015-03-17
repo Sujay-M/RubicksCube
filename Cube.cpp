@@ -5,11 +5,11 @@ Cube::Cube()
 {
 	return;
 }
-Cube::Cube(GLfloat center[],int size,GLfloat col[][3])
+Cube::Cube(GLfloat center[],int size)
 {
-	initialize(center,size,col);
+	initialize(center,size);
 }
-void Cube::initialize(GLfloat center[],int size,GLfloat col[][3])
+void Cube::initialize(GLfloat center[],int size)
 {
 	GLfloat dummy[4][3];
 	int index,indexA,indexB,toggleA,toggleB;
@@ -31,9 +31,6 @@ void Cube::initialize(GLfloat center[],int size,GLfloat col[][3])
 			face[i][j].setPoint(dummy[j]);
 		}
 	}
-	for(int j=0;j<6;j++)
-		for(int i=0;i<3;i++)
-			color[j][i] = col[j][i];
 }
 void Cube::render()
 {
@@ -49,4 +46,9 @@ void Cube::render()
 		}
 		glEnd();
 	}	
+}
+void Cube::setColor(int no,GlFloat col[])
+{
+	for (int i = 0; i < 3; i++)
+		color[no][i] = col[i];
 }

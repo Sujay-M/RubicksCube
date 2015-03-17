@@ -6,7 +6,8 @@ class Cube
 	bool dispFace[6];
 	public:
 		void Cube();
-		void Cube(GLfloat[],int,GLfloat[][3]);
+		void Cube(GLfloat[],int);
+		void setColor(int,GlFloat[]);
 		void initialize(GLfloat[],int,GLfloat[][3]);
 		void render();
 }
