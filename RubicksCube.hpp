@@ -1,3 +1,4 @@
+#include <GL/glut.h>
 #include "Cube.hpp"
 class RCube
 {
@@ -9,5 +10,4 @@ class RCube
 		void rotateFace(int,int);
 		void display();
 		void initializeCubes();
-
-}
+};

@@ -1,3 +1,4 @@
+#include <GL/glut.h>
 #include "RubicksCube.hpp"
 void assign(int n,int*** cubeBlockNo)
 {

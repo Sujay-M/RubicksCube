@@ -1,3 +1,4 @@
+#include <GL/glut.h>
 #include "Points.hpp"
 class Cube
 {
@@ -5,9 +6,10 @@ class Cube
 	GLfloat color[6][3];
 	bool dispFace[6];
 	public:
-		void Cube();
-		void Cube(GLfloat[],int);
-		void setColor(int,GlFloat[]);
-		void initialize(GLfloat[],int,GLfloat[][3]);
+		Cube();
+		Cube(GLfloat[],int);
+		void setColor(int,GLfloat[]);
+		void initialize(GLfloat[],int);
 		void render();
-}
+		void displayPoints();
+};

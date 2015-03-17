@@ -1,5 +1,14 @@
 #include "Points.hpp"
-Points::Points(GLfloat x1=0.0,GLfloat y1=0.0,GLfloat z1=0.0)
+# include <iostream>
+using namespace std;
+Points::Points()
+{
+	pt[0] = 0.0;
+	pt[1] = 0.0;
+	pt[2] = 0.0;
+	pt[3] = 1.0;
+}
+Points::Points(GLfloat x1,GLfloat y1,GLfloat z1)
 {
 	pt[0] = x1;
 	pt[1] = y1;
@@ -26,4 +35,11 @@ void Points::setPoint(GLfloat ptbuf[])
 	for(int i=0;i<3;i++)
 		pt[i] = ptbuf[i];
 	pt[4] = 1.0;
+}
+ostream &operator<<(ostream &stream, Points p)
+{
+	GLfloat pt[3];
+	p.getPoint(pt);
+	stream << "x = "<<pt[0]<<" y = "<<pt[1]<<" z = "<<pt[2]<<endl ;
+	return stream;
 }
