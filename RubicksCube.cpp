@@ -3,11 +3,9 @@
 GLfloat Color[6][3] = {{1,0,0},{0,1,0},{0,0,1},{1,1,0},{1,0,1},{0,1,1}};;
 void assign(int n,int*** cubeBlockNo)
 {
-	// cout<<"in assign n="<<n<<endl;
 	int counter =0;
 	for (int i = 0; i < n; ++i)
 	{
-		// cout<<"i = "<<i<<endl;
 		if(i==0 || i==n-1)
 			for (int j=0;j<n;j++)
 				for(int k=0;k<n;k++)
@@ -29,12 +27,11 @@ void assign(int n,int*** cubeBlockNo)
 	}
 }
 RCube::RCube(int SqMsize,int s)
-{
-	// cout<<"in RCube constructor"<<endl;
-	
+{	
 	size =s;
 	n = SqMsize;
 	int no = (2*n+2*(n-2))*(n-2)+2*n*n;
+
 	/* creating a map for the blocks in 3d space (cubeBlockNo)*/
 	int ***cubeBlockNo = new int**[n];
 	for (int i = 0; i < n; ++i)
@@ -44,12 +41,10 @@ RCube::RCube(int SqMsize,int s)
 			cubeBlockNo[i][j] = new int[n];
 	}
 	blocks = new Cube[no];
-	// cout<<"initializing"<<endl;
 	assign(n,cubeBlockNo);
-	initializeCubes();
-	// cout<<"initializing cubes done"<<endl;
 	/* creating the cubes to fit in rubicks cube*/
 	
+	initializeCubes();
 
 	/* creating the space for storing the face cube no map*/
 	for(int i=0;i<6;i++)
@@ -66,7 +61,6 @@ RCube::RCube(int SqMsize,int s)
 			blocks[num].setColor(0,Color[0]);
 		}
 	}
-	// cout<<"face 0 map creation done"<<endl;
 	for (int i = 0,counter=0; i < n; ++i)
 	{
 		for(int j=0;j<n;j++)
@@ -76,7 +70,6 @@ RCube::RCube(int SqMsize,int s)
 			blocks[num].setColor(1,Color[1]);
 		}
 	}
-	// cout<<"face 1 map creation done"<<endl;
 	for (int i = 0,counter=0; i < n; ++i)
 	{
 		for(int k=0;k<n;k++)
@@ -86,7 +79,6 @@ RCube::RCube(int SqMsize,int s)
 			blocks[num].setColor(2,Color[2]);
 		}
 	}
-	// cout<<"face 2 map creation done"<<endl;
 	for (int i = 0,counter=0; i < n; ++i)
 	{
 		for(int k=0;k<n;k++)
@@ -96,7 +88,6 @@ RCube::RCube(int SqMsize,int s)
 			blocks[num].setColor(3,Color[3]);
 		}
 	}
-	// cout<<"face 3 map creation done"<<endl;
 	for (int j = 0,counter=0; j < n; ++j)
 	{
 		for(int k=0;k<n;k++)
@@ -106,7 +97,6 @@ RCube::RCube(int SqMsize,int s)
 			blocks[num].setColor(4,Color[4]);
 		}
 	}
-	// cout<<"face 4 map creation done"<<endl;
 	for (int j = 0,counter=0; j < n; ++j)
 	{
 		for(int k=0;k<n;k++)
@@ -116,21 +106,17 @@ RCube::RCube(int SqMsize,int s)
 			blocks[num].setColor(5,Color[5]);
 		}
 	}
-	// cout<<"face 5 map creation done"<<endl;
 	delete(cubeBlockNo);
 }
 void RCube::initializeCubes()
 {
-	// cout<<"in initializeCubes"<<endl;
 	int counter =0;int sub=n/2;GLfloat center[3];
 	for (int i = 0; i < n; ++i)
 	{
-		// cout<<"i = "<<i<<endl;
 		if(i==0 || i==n-1)
 			for (int j=0;j<n;j++)
 				for(int k=0;k<n;k++)
 				{
-					// cout<<"k = "<<k<<endl;
 					center[0] = float(k-sub)*(size/float(n));
 					center[1] = -float(j-sub)*(size/float(n));
 					center[2] = -float(i-sub)*(size/float(n));
@@ -168,17 +154,6 @@ void RCube::initializeCubes()
 void RCube::display()
 {
 	int no = (2*n+2*(n-2))*(n-2)+2*n*n;
-	// cout<<"n = "<<n<<"no = "<<no<<endl;
-	// for (int i = 0; i < no; ++i)
-	// {
-	// 	// cout<<"displaying cube "<<i<<endl;
-	// 	// // blocks[no].render();
-	// 	// blocks[no].displayPoints();
-	// 	cout<<"i="<<i<<endl;
-	// 	blocks[no].displayPoints();
-	// }
-	// blocks[0].displayPoints();
 	for (int i = 0; i < no; ++i)
 		blocks[i].render();
-	// blocks[1].displayColor();
 }

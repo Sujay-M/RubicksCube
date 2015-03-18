@@ -3,22 +3,10 @@
 #include <iostream>
 #define SIZE 120
 using namespace std;
-// GLfloat center[] = {0.0,0.0,0.0};
-RCube c(11,SIZE);
-// GLfloat Color[6][3] = {{1.0,0.0,0.0},{0.0,1.0,0.0},{0.0,0.0,1.0},{0.5,1.0,0.5},{0.0,0.5,1.0},{0.5,0.5,1.0}};
+RCube c(5,SIZE);
 void draw()
 {
-	// for (int i = 0; i < 6; ++i)
-		// c.setColor(i,Color[i]);
 	c.display();
-	// for(int i=0;i<1000000;i++);
-	// glRotatef(1.0,1.0,1.0,1.0);
-	// glutPostRedisplay();
-	// glColor3f(0.0,0.0,0.0);
-	// glBegin(GL_LINES);
-	// glVertex3f(50.0,50.0,50.0);
-	// glVertex3f(75.0,75.0,75.0);
-	// glEnd();
 	for(int i=0;i<1000000;i++);
 	glRotatef(1.0,1.0,1.0,1.0);
 	glutPostRedisplay();

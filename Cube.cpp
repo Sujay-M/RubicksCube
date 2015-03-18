@@ -4,12 +4,10 @@
 
 Cube::Cube()
 {
-	// cout<<"in Cube default constructor"<<endl;
 	return;
 }
 Cube::Cube(GLfloat center[],int size)
 {
-	// cout<<"in Cube parameterised constructor"<<endl;
 	initialize(center,size);
 }
 void Cube::initialize(GLfloat center[],int size)
