@@ -4,10 +4,12 @@
 
 Cube::Cube()
 {
+	cout<<"in Cube default constructor"<<endl;
 	return;
 }
 Cube::Cube(GLfloat center[],int size)
 {
+	cout<<"in Cube parameterised constructor"<<endl;
 	initialize(center,size);
 }
 void Cube::initialize(GLfloat center[],int size)
@@ -47,6 +49,14 @@ void Cube::render()
 			glVertex3fv(vertex);
 		}
 		glEnd();
+		glColor3f(0.0,0.0,0.0);
+		glBegin(GL_LINE_LOOP);
+		for(int j=0;j<4;j++)
+		{
+			face[i][j].getPoint(vertex);
+			glVertex3fv(vertex);
+		}
+		glEnd();
 	}	
 }
 void Cube::setColor(int no,GLfloat col[])
@@ -60,5 +70,13 @@ void Cube::displayPoints()
 	{
 		cout<<"face "<<i<<endl;
 		cout<<face[i][0]<<face[i][1]<<face[i][2]<<face[i][3];
+	}
+}
+void Cube::displayColor()
+{
+	for (int i = 0; i < 6; ++i)
+	{
+		cout<<"face "<<i<<endl;
+		cout<<"( "<<color[i][0]<<" , "<<color[i][1]<<" , "<<color[i][2]<<" ) "<<endl;
 	}
 }

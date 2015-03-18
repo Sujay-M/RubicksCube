@@ -12,4 +12,5 @@ class Cube
 		void initialize(GLfloat[],int);
 		void render();
 		void displayPoints();
+		void displayColor();
 };
