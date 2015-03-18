@@ -121,11 +121,11 @@ RCube::RCube(int SqMsize,int s)
 }
 void RCube::initializeCubes()
 {
-	cout<<"in initializeCubes"<<endl;
+	// cout<<"in initializeCubes"<<endl;
 	int counter =0;int sub=n/2;GLfloat center[3];
 	for (int i = 0; i < n; ++i)
 	{
-		cout<<"i = "<<i<<endl;
+		// cout<<"i = "<<i<<endl;
 		if(i==0 || i==n-1)
 			for (int j=0;j<n;j++)
 				for(int k=0;k<n;k++)

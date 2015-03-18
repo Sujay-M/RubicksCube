@@ -4,7 +4,7 @@
 #define SIZE 120
 using namespace std;
 // GLfloat center[] = {0.0,0.0,0.0};
-RCube c(3,SIZE);
+RCube c(11,SIZE);
 // GLfloat Color[6][3] = {{1.0,0.0,0.0},{0.0,1.0,0.0},{0.0,0.0,1.0},{0.5,1.0,0.5},{0.0,0.5,1.0},{0.5,0.5,1.0}};
 void draw()
 {
