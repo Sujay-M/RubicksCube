@@ -24,7 +24,7 @@ void Cube::initialize(GLfloat center[],int size)
 		{
 			dummy[j][index] = center[index] + (i&1)*size -(size/2);
 			dummy[j][indexA] = center[indexA] + toggleA*size/2;
-			dummy[j][indexB] = center[indexB] + toggleB*size/2;			
+			dummy[j][indexB] = center[indexB] + toggleB*size/2;
 			if((j+1)&1)
 				toggleA*=-1;
 			if((j+1)>1)
@@ -76,5 +76,15 @@ void Cube::displayColor()
 	{
 		cout<<"face "<<i<<endl;
 		cout<<"( "<<color[i][0]<<" , "<<color[i][1]<<" , "<<color[i][2]<<" ) "<<endl;
+	}
+}
+void Cube::rotate(float affine[4][4])
+{
+	for (int i = 0; i < 6; ++i)
+	{
+		for (int j = 0; j < 4; ++j)
+		{
+			face[i][j]*affine;
+		}
 	}
 }

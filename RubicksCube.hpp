@@ -6,8 +6,11 @@ class RCube
 	Cube *blocks;
 	
 	public:
+		RCube();
 		RCube(int,int);//nXn and size
+		void init(int,int);
 		void rotateFace(int,int);
 		void display();
 		void initializeCubes();
+		void rotateCube(float[4][4]);
 };

@@ -1,6 +1,6 @@
 #include <GL/glut.h>
 #include "RubicksCube.hpp"
-GLfloat Color[6][3] = {{1,0,0},{0,1,0},{0,0,1},{1,1,0},{1,0,1},{0,1,1}};;
+GLfloat Color[6][3] = {{1,0,0},{0,1,0},{0,0,1},{1,1,0},{1,0,1},{1,1,1}};;
 void assign(int n,int*** cubeBlockNo)
 {
 	int counter =0;
@@ -26,7 +26,15 @@ void assign(int n,int*** cubeBlockNo)
 		}
 	}
 }
+RCube::RCube()
+{
+	return;
+}
 RCube::RCube(int SqMsize,int s)
+{
+	init(SqMsize,s);
+}
+void RCube::init(int SqMsize,int s)
 {	
 	size =s;
 	n = SqMsize;
@@ -156,4 +164,14 @@ void RCube::display()
 	int no = (2*n+2*(n-2))*(n-2)+2*n*n;
 	for (int i = 0; i < no; ++i)
 		blocks[i].render();
+}
+void RCube::rotateFace(int ,int )
+{
+	
+}
+void RCube::rotateCube(float affine[4][4])
+{
+	int no = (2*n+2*(n-2))*(n-2)+2*n*n;
+	for (int i = 0; i < no; ++i)
+		blocks[i].rotate(affine);
 }

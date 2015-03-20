@@ -11,6 +11,7 @@ class Cube
 		void setColor(int,GLfloat[]);
 		void initialize(GLfloat[],int);
 		void render();
+		void rotate(float[4][4]);
 		void displayPoints();
 		void displayColor();
 };
