@@ -7,13 +7,65 @@
 using namespace std;
 int xp,yp;
 bool clicked = FALSE;
+bool faceRot = FALSE;
 float state[3][3] = {{0,90.0,90.0},{90.0,0.0,90.0},{90.0,90.0,0.0}};
-// struct state
-// {
-// 	float aspectRatio;
-
-// };
+int index,selBlocks[100];
 RCube c(3,SIZE);
+float maxZ(float pts[24][3])
+{
+	float max = -200;
+	for (int i = 0; i < 24; ++i)
+	{
+		if(pts[i][2]>max)
+			max = pts[i][2];
+	}
+	return max;
+}
+int processHT(int hits,unsigned int sb[])
+{
+	GLuint i,*ptr,sel[100];
+	ptr = (GLuint*)sb;
+	int final;
+	float max = -200,pts[24][3];
+	for (int i = 0; i < hits; ++i)
+	{
+		ptr+=3;
+		sel[i] = *ptr;
+		c.getBlockPts(pts,sel[i]);
+		float curMax = maxZ(pts);
+		if(max<curMax)
+		{
+			max = curMax;
+			final = sel[i];
+		}
+		ptr++;
+	}
+	return final;
+}
+int check(int x,int y)
+{
+	unsigned int sb[100];
+	int hits,vp[4];
+	glGetIntegerv(GL_VIEWPORT,vp);
+	glSelectBuffer(SIZE,sb);
+	glRenderMode(GL_SELECT);
+	glInitNames();
+	glPushName(0);
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	gluPickMatrix((double)x,(double)(vp[3]-y),1,1,vp);
+	glOrtho(-200,200,-200,200,-200,200);
+	c.display(GL_SELECT);
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glFlush();
+	hits = glRenderMode(GL_RENDER);
+	// cout<<"hits = "<<hits<<endl;
+	if(hits>0)
+		return processHT(hits,sb);
+	return -1;
+}
 void rotMatrix(int theta,int axis,float affine[4][4])
 {
 	float rad = theta*(3.14/180.0);
@@ -57,7 +109,7 @@ void rotateView(int w,int h)
 
 void draw()
 {
-	c.display();
+	c.display(GL_SELECT);
 	// for(int i=0;i<1000000;i++);
 	// glRotatef(10.0,1.0,1.0,1.0);
 	// glutPostRedisplay();
@@ -83,16 +135,34 @@ void display()
 }
 void mouse(int btn,int state,int x,int y)
 {
+	int block;
 	if(btn == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
 	{
 		clicked = TRUE;
 		xp = x;
 		yp = y;
+		index = 0;
+		if((block = check(x,y))!=-1)
+		{
+			selBlocks[index++] = block;
+			faceRot = TRUE;		
+		}	
+		else
+			faceRot = FALSE;
 	}
-	if(btn == GLUT_LEFT_BUTTON && state == GLUT_UP)
+	if(btn == GLUT_LEFT_BUTTON && state == GLUT_UP )
 	{
-		rotateView((x-xp),(y-yp));
 		clicked = FALSE;
+		if(faceRot==FALSE)
+			rotateView((x-xp),(y-yp));
+		else
+		{
+			cout<<" selBlocks "<<endl;
+			for (int i = 0; i < index; ++i)
+			{
+				cout<<selBlocks[i]<<endl;
+			}
+		}
 	}
 
 
@@ -101,7 +171,10 @@ void motion(int x,int y)
 {
 	if(clicked==TRUE)
 	{
-		rotateView((x-xp),(y-yp));
+		if(faceRot==FALSE)
+			rotateView((x-xp),(y-yp));
+		else
+			selBlocks[index++] = check(x,y);
 		xp = x;
 		yp = y;
 	}

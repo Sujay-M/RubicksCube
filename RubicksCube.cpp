@@ -113,11 +113,11 @@ void RCube::init(int SqMsize,int s)
 	// }
 }
 
-void RCube::display()
+void RCube::display(GLenum mode)
 {
 	int no = (2*n+2*(n-2))*(n-2)+2*n*n;
 	for (int i = 0; i < no; ++i)
-		blocks[i].render();
+		blocks[i].render(mode,i);
 }
 
 void RCube::rotateFace(int ,int )
@@ -130,4 +130,8 @@ void RCube::rotateCube(float affine[4][4])
 	int no = (2*n+2*(n-2))*(n-2)+2*n*n;
 	for (int i = 0; i < no; ++i)
 		blocks[i].rotate(affine);
+}
+void RCube::getBlockPts(float pts[24][3],int num)
+{
+	blocks[num].getPoints(pts);
 }

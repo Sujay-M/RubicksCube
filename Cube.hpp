@@ -13,8 +13,9 @@ class Cube
 		void initialize(GLfloat[],int);
 		void setLattice(GLfloat[],int);
 		void initFromLattice();
-		void render();
+		void render(GLenum,int);
 		void rotate(float[4][4]);
 		void displayPoints();
 		void displayColor();
+		void getPoints(float[24][3]);
 };

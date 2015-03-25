@@ -10,7 +10,8 @@ class RCube
 		RCube(int,int);//nXn and size
 		void init(int,int);
 		void rotateFace(int,int);
-		void display();
+		void display(GLenum);
 		void initializeCubes();
+		void getBlockPts(float[24][3],int);
 		void rotateCube(float[4][4]);
 };

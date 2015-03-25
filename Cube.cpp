@@ -59,9 +59,11 @@ void Cube::initialize(GLfloat center[],int size)
 	setLattice(center,size);
 	initFromLattice();
 }
-void Cube::render()
+void Cube::render(GLenum mode, int num)
 {
-	GLfloat vertex[3];	
+	GLfloat vertex[3];
+	if (mode == GL_SELECT)	
+		glLoadName(num);	
 	for(int i=0;i<6;i++)
 	{
 		glColor3f(color[i][0],color[i][1],color[i][2]);
@@ -113,4 +115,10 @@ void Cube::rotate(float affine[4][4])
 	// 	latticePts[i]*affine;
 	// }
 	// initFromLattice();
+}
+void Cube::getPoints(float lattice[24][3])
+{
+	for (int i = 0; i < 6; ++i)
+		for (int j = 0; j < 4; ++j)
+			face[i][j].getPoint(lattice[i*4+j]);
 }
