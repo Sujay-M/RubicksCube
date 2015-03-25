@@ -6,6 +6,7 @@
 #define SIZE 150
 using namespace std;
 int xp,yp;
+bool clicked = FALSE;
 float state[3][3] = {{0,90.0,90.0},{90.0,0.0,90.0},{90.0,90.0,0.0}};
 // struct state
 // {
@@ -43,7 +44,7 @@ void rotMatrix(int theta,int axis,float affine[4][4])
 }
 void rotateView(int w,int h)
 {
-	float theta,xth,yth,zth;// = atan2(h/float(w));
+	float theta,xth,yth,zth;
 	float affine[4][4];
 	theta = (w/500.0)*60;
 	rotMatrix(theta,1,affine);
@@ -53,16 +54,24 @@ void rotateView(int w,int h)
 	c.rotateCube(affine);
 	glutPostRedisplay();
 }
+
 void draw()
 {
 	c.display();
 	// for(int i=0;i<1000000;i++);
-	// glRotatef(1.0,1.0,1.0,1.0);
+	// glRotatef(10.0,1.0,1.0,1.0);
 	// glutPostRedisplay();
 }
 void reshape(int w,int h)
 {
-
+	glViewport(0,0,w,h);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	if(w>=h)
+		glOrtho(-200*(float)w/(float)h,200*(float)w/(float)h,-200,200,-200,200);
+	else
+		glOrtho(-200,200,-200*(float)h/(float)w,200*(float)h/(float)w,-200,200);
+	glMatrixMode(GL_MODELVIEW);
 }
 void display()
 {
@@ -76,16 +85,26 @@ void mouse(int btn,int state,int x,int y)
 {
 	if(btn == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
 	{
+		clicked = TRUE;
 		xp = x;
 		yp = y;
 	}
 	if(btn == GLUT_LEFT_BUTTON && state == GLUT_UP)
 	{
-		int w = (x-xp);
-		int h = (y-yp);
-		rotateView(w,h);
+		rotateView((x-xp),(y-yp));
+		clicked = FALSE;
 	}
 
+
+}
+void motion(int x,int y)
+{
+	if(clicked==TRUE)
+	{
+		rotateView((x-xp),(y-yp));
+		xp = x;
+		yp = y;
+	}
 }
 void myinit()
 {
@@ -106,6 +125,7 @@ int main(int argc, char** argv)
 	glutDisplayFunc(display);
 	glutReshapeFunc(reshape);
 	glutMouseFunc(mouse);
+	glutMotionFunc(motion);
 	// glutIdleFunc(draw);
 	glutMainLoop();
 	return 0;

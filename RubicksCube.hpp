@@ -2,7 +2,7 @@
 #include "Cube.hpp"
 class RCube
 {
-	int n,size,*faceBlocks[6];
+	int n,size,***cubeBlockNo;
 	Cube *blocks;
 	
 	public:

@@ -9,4 +9,4 @@ Cube.o : Cube.cpp Points.o
 Points.o : Points.cpp
 	g++ -c -o Points.o Points.cpp
 clean :
-	rm RC main.o RubicksCube.o Cube.o Points.o
+	rm RC.exe main.o RubicksCube.o Cube.o Points.o
