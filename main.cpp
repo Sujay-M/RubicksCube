@@ -169,12 +169,17 @@ void mouse(int btn,int state,int x,int y)
 }
 void motion(int x,int y)
 {
+	int block;
 	if(clicked==TRUE)
 	{
 		if(faceRot==FALSE)
 			rotateView((x-xp),(y-yp));
 		else
-			selBlocks[index++] = check(x,y);
+		{
+			block = check(x,y);
+			if(block != selBlocks[index-1])
+				selBlocks[index++] = block;
+		}	
 		xp = x;
 		yp = y;
 	}
