@@ -3,15 +3,36 @@
 #include <iostream>
 #include <cstdlib>
 #include <cmath>
+#include "transformations.h"
 #define SIZE 150
 using namespace std;
+
+struct def
+{
+	def()
+	{
+		for(int i=0;i<4;i++)
+			for (int j = 0; j < 4; ++j)
+				curMat[i][j] = faceTransform[i][j] = 0.0;
+		for (int i = 0; i < 4; ++i)
+			curMat[i][i] = faceTransform[i][i] = 1.0;
+		convert();
+	}
+	void convert()
+	{
+		for (int i = 0,count=0; i < 4; ++i)
+			for (int j = 0; j < 4; ++j)
+				colMaj[count++] = curMat[j][i];
+	}
+	float curMat[4][4];
+	float colMaj[16];
+	float faceTransform[4][4];
+}state;
 int xp,yp;
-bool clicked = FALSE;
-bool faceRot = FALSE;
-float state[3][3] = {{0,90.0,90.0},{90.0,0.0,90.0},{90.0,90.0,0.0}};
+bool clicked=FALSE,faceRot=FALSE;
 int index,selBlocks[100];
 RCube c(3,SIZE);
-int count1=1;
+
 float maxZ(float pts[24][3])
 {
 	float max = -200;
@@ -62,38 +83,9 @@ int check(int x,int y)
 	glPopMatrix();
 	glFlush();
 	hits = glRenderMode(GL_RENDER);
-	// cout<<"hits = "<<hits<<endl;
 	if(hits>0)
 		return processHT(hits,sb);
 	return -1;
-}
-void rotMatrix(int theta,int axis,float affine[4][4])
-{
-	float rad = theta*(3.14/180.0);
-	float s,c;
-	s = sin(rad);
-	c = cos(rad);
-	if(axis==0)
-	{
-		float temp[4][4] = {{1.0,0,0,0},{0,c,-s,0},{0,s,c,0},{0,0,0,1.0}};
-		for(int i=0;i<4;i++)
-			for(int j=0;j<4;j++)
-				affine[i][j] = temp[i][j];
-	}
-	else if(axis==1)
-	{
-		float temp[4][4] = {{c,0,s,0},{0,1.0,0,0},{-s,0,c,0},{0,0,0,1.0}};
-		for(int i=0;i<4;i++)
-			for(int j=0;j<4;j++)
-				affine[i][j] = temp[i][j];
-	}
-	else if(axis==2)
-	{
-		float temp[4][4] = {{c,-s,0,0},{s,c,0,0},{0,0,1.0,0},{0,0,0,1.0}};
-		for(int i=0;i<4;i++)
-			for(int j=0;j<4;j++)
-				affine[i][j] = temp[i][j];
-	}
 }
 void rotateView(int w,int h)
 {
@@ -101,28 +93,20 @@ void rotateView(int w,int h)
 	float affine[4][4];
 	theta = (w/500.0)*60;
 	rotMatrix(theta,1,affine);
-	c.rotateCube(affine);
+	applyTransform(state.curMat,affine);
 	theta = (h/500.0)*60;
 	rotMatrix(theta,0,affine);
-	c.rotateCube(affine);
-	glutPostRedisplay();
+	applyTransform(state.curMat,affine);
+	state.convert();
 }
 
 void draw()
 {
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glMultMatrixf(state.colMaj);
 	c.display(GL_SELECT);
-	if(count1%4==0)
-		{
-			// cout<<count1<<endl;
-			glMatrixMode(GL_MODELVIEW);
-			// glLoadIdentity();
-			glPopMatrix();
-			glutPostRedisplay();
-			glPushMatrix();
-		}
-	// for(int i=0;i<1000000;i++);
-	// glRotatef(10.0,1.0,1.0,1.0);
-	// glutPostRedisplay();
+	
 }
 void reshape(int w,int h)
 {
@@ -173,9 +157,7 @@ void mouse(int btn,int state,int x,int y)
 			{
 				cout<<selBlocks[i]<<endl;
 			}
-		}
-		count1++;
-			
+		}			
 	}
 }
 void motion(int x,int y)

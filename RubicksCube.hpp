@@ -13,5 +13,5 @@ class RCube
 		void display(GLenum);
 		void initializeCubes();
 		void getBlockPts(float[24][3],int);
-		void rotateCube(float[4][4]);
+		void Transform(float[4][4]);
 };

@@ -97,7 +97,10 @@ void RCube::init(int SqMsize,int s)
 	for (int j = 0; j < n; ++j)
 		for(int k=0;k<n;k++)
 			blocks[cubeBlockNo[0][j][k]].setColor(5,Color[5]);
-	
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	display(GL_RENDER);
+	glPushMatrix();
 	// for (int i = 0; i < n; ++i)
 	// {
 	// 	cout<<i<<"th square"<<endl;
@@ -125,7 +128,7 @@ void RCube::rotateFace(int ,int )
 	
 }
 
-void RCube::rotateCube(float affine[4][4])
+void RCube::Transform(float affine[4][4])
 {
 	int no = (2*n+2*(n-2))*(n-2)+2*n*n;
 	for (int i = 0; i < no; ++i)

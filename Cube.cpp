@@ -53,6 +53,7 @@ void Cube::initFromLattice()
 		}
 	}
 }
+
 void Cube::initialize(GLfloat center[],int size)
 {
 	GLfloat dummy[4][3];
