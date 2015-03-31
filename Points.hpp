@@ -8,6 +8,7 @@ class Points
 		Points();
 		Points(GLfloat ,GLfloat,GLfloat);
 		Points operator*(float [4][4]);
+		Points operator*(Points);
 		friend ostream &operator<<(ostream &stream, Points p);
 		void getPoint(GLfloat[]);
 		void setPoint(GLfloat[]);

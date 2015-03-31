@@ -29,6 +29,28 @@ void rotMatrix(int theta,int axis,float affine[4][4])
 				affine[i][j] = temp[i][j];
 	}
 }
+void transMat(float x,float y,float z,float affine[4][4])
+{
+	for (int i = 0; i < 4; ++i)
+		for (int j = 0; j < 4; ++j)
+			affine[i][j] = 0.0;
+	for (int i = 0; i < 4; ++i)
+		affine[i][i] = 1.0;
+	affine[0][3] = x;
+	affine[1][3] = y;
+	affine[2][3] = z;
+}
+void scaleMat(float dx,float dy,float dz,float affine[4][4])
+{
+	for (int i = 0; i < 4; ++i)
+		for (int j = 0; j < 4; ++j)
+			affine[i][j] = 0.0;
+	affine[0][0] = dx;
+	affine[1][1] = dy;
+	affine[2][2] = dz;
+	affine[3][3] = 1;
+}
+
 void applyTransform(float curMat[4][4],float affine[4][4])
 {
 	int i,j,k;

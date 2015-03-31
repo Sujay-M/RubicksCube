@@ -25,6 +25,17 @@ Points Points::operator*(float affine[4][4])
 		pt[i] = result[i];
 	return *this;
 }
+Points Points::operator*(Points p2)
+{
+	GLfloat pts[3],res[3];
+	p2.getPoint(pts);
+	Points p3;
+	res[0] = pt[1]*pts[2] - pts[1]*pt[2];
+	res[1] = pt[2]*pts[0] - pts[2]*pt[0];
+	res[2] = pt[0]*pts[1] - pts[0]*pt[1];
+	p3.setPoint(res);
+	return p3;
+}
 void Points::getPoint(GLfloat ptbuf[])
 {
 	for(int i=0;i<3;i++)

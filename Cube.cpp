@@ -64,7 +64,8 @@ void Cube::render(GLenum mode, int num)
 {
 	GLfloat vertex[3];
 	if (mode == GL_SELECT)	
-		glLoadName(num);	
+		glLoadName(num);
+	glLineWidth(3);	
 	for(int i=0;i<6;i++)
 	{
 		glColor3f(color[i][0],color[i][1],color[i][2]);
@@ -77,6 +78,7 @@ void Cube::render(GLenum mode, int num)
 		glEnd();
 		glColor3f(0.0,0.0,0.0);
 		glBegin(GL_LINE_LOOP);
+
 		for(int j=0;j<4;j++)
 		{
 			face[i][j].getPoint(vertex);
@@ -90,36 +92,15 @@ void Cube::setColor(int no,GLfloat col[])
 	for (int i = 0; i < 3; i++)
 		color[no][i] = col[i];
 }
-void Cube::displayPoints()
-{
-	for(int i=0;i<6;i++)
-	{
-		cout<<"face "<<i<<endl;
-		cout<<face[i][0]<<face[i][1]<<face[i][2]<<face[i][3];
-	}
-}
-void Cube::displayColor()
+void Cube::getPoints(float lattice[24][3])
 {
 	for (int i = 0; i < 6; ++i)
-	{
-		cout<<"face "<<i<<endl;
-		cout<<"( "<<color[i][0]<<" , "<<color[i][1]<<" , "<<color[i][2]<<" ) "<<endl;
-	}
+		for (int j = 0; j < 4; ++j)
+			face[i][j].getPoint(lattice[i*4+j]);
 }
 void Cube::rotate(float affine[4][4])
 {
 	for (int i = 0; i < 6; ++i)
 		for(int j=0;j<4;j++)
 			face[i][j]*affine;
-	// for (int i = 0; i < 8; ++i)
-	// {
-	// 	latticePts[i]*affine;
-	// }
-	// initFromLattice();
-}
-void Cube::getPoints(float lattice[24][3])
-{
-	for (int i = 0; i < 6; ++i)
-		for (int j = 0; j < 4; ++j)
-			face[i][j].getPoint(lattice[i*4+j]);
 }
