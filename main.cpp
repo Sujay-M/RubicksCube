@@ -56,7 +56,7 @@ void checkRevert(int x,int y)
 	initx = -state.SIZE*7.0/4.0;
 	inity = state.SIZE;	
 	px = (x-state.winW/2)*2*state.w/state.winW;
-	py = -(y-state.winH/2)*2*state.h/state.winH;
+	py = -(y-state.winH/2)*2*state.w/state.winW;
 	if(px>(initx-state.SIZE/2)&& px<(initx+state.SIZE/2))
 		for (int i = 0; i < 3; ++i)
 		{
@@ -123,21 +123,26 @@ float maxZ(float pts[24][3])
 }
 int processHT(int hits,unsigned int sb[])
 {
-	GLuint i,*ptr,sel[100];
+	GLuint i,*ptr,sel;
 	ptr = (GLuint*)sb;
 	int final;
 	float max = -state.d,pts[24][3];
 	for (int i = 0; i < hits; ++i)
 	{
 		ptr+=3;
-		sel[i] = *ptr;
-		state.c.getBlockPts(pts,sel[i]);
-		float curMax = maxZ(pts);
-		if(max<curMax)
+		sel = *ptr;
+		if(sel<state.no)
 		{
-			max = curMax;
-			final = sel[i];
+			state.c.getBlockPts(pts,sel);
+			float curMax = maxZ(pts);
+			if(max<curMax)
+			{
+				max = curMax;
+				final = sel;
+			}
 		}
+		else
+			state.selFaces[state.faceCount++] = sel-state.no;
 		ptr++;
 	}
 	return final;
@@ -204,49 +209,7 @@ void getAxis(int dx1,int dy1,float pt[])
 		pt[2] = 0;
 	}
 }
-int faceInfo(int x,int y)
-{
-	float pts[24][3];
-	Points temp;
-	float mat[16],px,py;
-	glGetFloatv(GL_MODELVIEW_MATRIX, mat);
-	state.setCur(mat);
-	int face=-1;
-	state.dummy.getPoints(pts);
-	float max = -200;
-	px = (x-state.winW/2)*2*state.w/state.winW;
-	py = -(y-state.winH/2)*2*state.h/state.winH;
-	for (int i = 0, count=0; i < 6; ++i)
-	{
-		float xmax=-state.w,xmin = state.w,ymax = -state.h,ymin = state.h,zmax = -state.d;
-		for(int j =0 ;j<4;j++)
-		{	
-			cout<<"i = "<<i<<endl;
-			temp.setPoint(pts[count]);
-			cout<<temp;
-			temp*state.curMat;
-			temp.getPoint(pts[count]);
-			if(xmax < pts[count][0])
-				xmax = pts[count][0];
-			if(xmin > pts[count][0])
-				xmin = pts[count][0];
-			if(ymax < pts[count][1])
-				ymax = pts[count][1];
-			if(ymin > pts[count][1])
-				ymin = pts[count][1];
-			if(zmax < pts[count][2])
-				zmax = pts[count++][2];
-		}
-		cout<<"x = "<<px<<"y = "<<py<<" xmin,xmax "<<xmin<<","<<xmax<<" ymin,ymax "<<ymin<<","<<ymax<<" z = "<<zmax<<endl;
-		if(px<xmax && px>xmin && py<ymax && py>ymin && zmax>max)
-		{
-			// cout<<"hi"<<endl;
-			face = i;
-			max = zmax;
-		}
-	}
-	return face;
-}
+
 void mouse(int btn,int st,int x,int y)
 {
 	int block;
@@ -258,23 +221,21 @@ void mouse(int btn,int st,int x,int y)
 		state.xp = x;
 		state.yp = cy;
 		state.index = 0;
+		state.faceCount = 0;
 		if((block = check(x,y))!=-1)
 		{
 			state.selBlocks[state.index++] = block;
-			state.faceRot = TRUE;		
+			state.faceRot = TRUE;
+			float px = (x-state.winW/2)*2*state.w/state.winW;
+			float py = -(y-state.winH/2)*2*state.w/state.winW;
+			state.c.faceInfo(block,state.selFaces,state.faceCount,state.selectedF);
+			cout<<state.selectedF<<endl;	
 		}	
 		else
 			state.faceRot = FALSE;
 	}
 	if(btn == GLUT_LEFT_BUTTON && st == GLUT_UP )
-	{
-		float lx = (x - 250)/500.0*400.0;
-		float ly = (cy - 250)/500.0*400.0;
 		state.clicked = FALSE;
-		if(state.faceRot==TRUE)	
-			state.c.rotateF(state.selBlocks,state.index);
-				
-	}
 }
 
 void motion(int x,int y)
@@ -296,8 +257,7 @@ void motion(int x,int y)
 			if(block != state.selBlocks[state.index-1])
 			{
 				state.selBlocks[state.index++] = block;
-				int face = faceInfo(x,y);
-				cout<<"face = "<<face<<endl;
+				
 			}
 		}	
 		state.xp = x;

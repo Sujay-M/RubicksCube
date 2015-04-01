@@ -5,7 +5,7 @@ struct State
 {
 	bool clicked,faceRot;
 	const int SIZE;
-	int index,selBlocks[100],n,no,xp,yp,magnitude,w,h,d,winW,winH;
+	int index,selBlocks[100],selFaces[10],selectedF,faceCount,n,no,xp,yp,magnitude,w,h,d,winW,winH;
 	float affine[4][4],curMat[4][4];
 	RCube c;
 	Cube dummy;

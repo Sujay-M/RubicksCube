@@ -76,8 +76,24 @@ void Cube::render(GLenum mode, int num)
 			glVertex3fv(vertex);
 		}
 		glEnd();
-		glColor3f(0.0,0.0,0.0);
-		glBegin(GL_LINE_LOOP);
+	}	
+}
+void Cube::drawOutLine(GLenum mode, int num,bool numberFace)
+{
+	GLfloat vertex[3];
+	glLineWidth(3);
+	glColor3f(0.0,0.0,0.0);
+	if (mode == GL_SELECT && !numberFace)	
+		glLoadName(num);
+	for(int i=0;i<6;i++)
+	{
+		if(mode == GL_SELECT && numberFace)
+		{
+			glLoadName(num+i);
+			glBegin(GL_POLYGON);
+		}
+		else
+			glBegin(GL_LINE_LOOP);
 
 		for(int j=0;j<4;j++)
 		{
@@ -85,7 +101,7 @@ void Cube::render(GLenum mode, int num)
 			glVertex3fv(vertex);
 		}
 		glEnd();
-	}	
+	}
 }
 void Cube::setColor(int no,GLfloat col[])
 {

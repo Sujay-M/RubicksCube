@@ -3,7 +3,7 @@
 class RCube
 {
 	int n,size,***cubeBlockNo,*faceBlocks[6];
-	Cube *blocks;
+	Cube *blocks,outLine;
 	
 	public:
 		RCube();
@@ -12,5 +12,6 @@ class RCube
 		void display(GLenum,int);
 		void initializeCubes();
 		void getBlockPts(float[24][3],int);
-		void rotateF(int[],int);
+		void faceInfo(int,int[],int,int&);
+		void rotateFace(float[4][4],int);
 };

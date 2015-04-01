@@ -14,7 +14,9 @@ RCube::RCube(int SqMsize,int s)
 
 void RCube::initializeCubes()
 {
-	int counter =0;int sub=n/2;GLfloat center[3];
+	int counter =0;int sub=n/2;
+	GLfloat center[3] = {0,0,0};
+	outLine.initialize(center,size);
 	for (int i = 0; i < n; ++i)
 	{
 		if(i==0 || i==n-1)
@@ -127,35 +129,39 @@ void RCube::init(int SqMsize,int s)
 void RCube::display(GLenum mode,int num)
 {
 	int no = (2*n+2*(n-2))*(n-2)+2*n*n;
-	// for (int i = 0; i < no; ++i)
-	// 	blocks[i].render(mode,i);
 	if (num==-1)
 		for (int i = 0; i < no; ++i)
+		{
 			blocks[i].render(mode,i);
+			blocks[i].drawOutLine(mode,i);
+		}
 	else
 		for (int i = 0; i < 9; ++i)
-			blocks[faceBlocks[num][i]].render(mode,num+no);
+		{
+			blocks[faceBlocks[num][i]].render(mode,-1);
+			blocks[faceBlocks[num][i]].drawOutLine(mode,-1);
+		}
+	outLine.drawOutLine(mode,no,TRUE);
+	if(mode==GL_SELECT)
+		outLine.drawOutLine(mode,no,TRUE);
 }
 void RCube::getBlockPts(float pts[24][3],int num)
 {
 	blocks[num].getPoints(pts);
 }
-void RCube::rotateF(int sel[],int num)
+
+void RCube::faceInfo(int sel,int selF[],int fc,int &final)
 {
-	for (int i = 0; i < num; ++i)
-	{
-		cout<<sel[i]<<endl;
-	}
-	// for (int i = 0; i < n; ++i)
-	// {
-	// 	cout<<"i = "<<i<<endl;
-	// 	for (int j = 0; j < n; ++j)
-	// 	{
-	// 		for (int k = 0; k < n; ++k)
-	// 		{
-	// 			cout<<cubeBlockNo[i][j][k]<<" ";
-	// 		}
-	// 		cout<<endl;
-	// 	}
-	// }
+	for (int i = 0; i < 6; ++i)
+		for (int j = 0; j < 9; ++j)
+			if(faceBlocks[i][j]==sel)
+				for (int k = 0; k < fc; ++k)
+					if(i==selF[k])
+						final = i;
+}
+void RCube::rotateFace(float affine[4][4],int face)
+{
+	for (int i = 0; i < 9; ++i)
+		blocks[faceBlocks[face][i]].rotate(affine);
+	//change codeblocknum and face map
 }

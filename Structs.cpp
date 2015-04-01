@@ -19,6 +19,8 @@ State::State(int num) : SIZE(150)
 	d = 200;
 	winW = 500;
 	winH = 500;
+	faceCount = 0;
+	selectedF = -1;
 }
 void State::setCur(float *cur)
 {
