@@ -12,6 +12,7 @@ class RCube
 		void display(GLenum,int);
 		void initializeCubes();
 		void getBlockPts(float[24][3],int);
-		void faceInfo(int,int[],int,int&);
-		void rotateFace(float[4][4],int);
+		void rotFace(int[],int,int[],int);
+		void rotateFace(int,bool);
+		void initFaceMap();
 };

@@ -220,24 +220,42 @@ void mouse(int btn,int st,int x,int y)
 		state.clicked = TRUE;
 		state.xp = x;
 		state.yp = cy;
-		state.index = 0;
 		state.faceCount = 0;
+		state.dir = 0;
+		state.index = 0;
 		if((block = check(x,y))!=-1)
 		{
 			state.selBlocks[state.index++] = block;
 			state.faceRot = TRUE;
 			float px = (x-state.winW/2)*2*state.w/state.winW;
 			float py = -(y-state.winH/2)*2*state.w/state.winW;
-			state.c.faceInfo(block,state.selFaces,state.faceCount,state.selectedF);
-			cout<<state.selectedF<<endl;	
+			// state.c.faceInfo(block,state.selFaces,state.faceCount,state.selectedF);
+			// cout<<state.selectedF<<endl;	
 		}	
 		else
 			state.faceRot = FALSE;
 	}
 	if(btn == GLUT_LEFT_BUTTON && st == GLUT_UP )
+	{
 		state.clicked = FALSE;
+		if(state.faceRot == TRUE)
+		{
+			state.faceRot = FALSE;
+			state.c.rotFace(state.selBlocks,state.index,state.selFaces,state.faceCount);
+		}
+	}
 }
-
+// void key(char ch)
+// {
+// 	switch(ch)
+// 	{
+// 		case 's':
+// 			if(state.dir==0)
+// 			{
+// 				state.dir = 1;
+// 			}
+// 	}
+// }
 void motion(int x,int y)
 {
 	int cy = 500-y;
@@ -254,11 +272,8 @@ void motion(int x,int y)
 		else
 		{
 			block = check(x,y);
-			if(block != state.selBlocks[state.index-1])
-			{
+			if(state.selBlocks[state.index-1]!=block)
 				state.selBlocks[state.index++] = block;
-				
-			}
 		}	
 		state.xp = x;
 		state.yp = cy;
@@ -318,6 +333,7 @@ int main(int argc, char** argv)
 	glutReshapeFunc(reshape);
 	glutMouseFunc(mouse);
 	glutMotionFunc(motion);
+	// glutKeyboardFunc(key);
 	glutMainLoop();
 	return 0;
 }
