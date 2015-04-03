@@ -14,5 +14,4 @@ class RCube
 		void getBlockPts(float[24][3],int);
 		void rotFace(int[],int,int[],int);
 		void rotateFace(int,bool);
-		void initFaceMap();
 };

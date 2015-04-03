@@ -10,6 +10,7 @@ class Cube
 		Cube();
 		Cube(GLfloat[],int);
 		void setColor(int,GLfloat[]);
+		void getColor(int,GLfloat[]);
 		void initialize(GLfloat[],int);
 		void setLattice(GLfloat[],int);
 		void initFromLattice();

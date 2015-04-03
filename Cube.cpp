@@ -108,6 +108,11 @@ void Cube::setColor(int no,GLfloat col[])
 	for (int i = 0; i < 3; i++)
 		color[no][i] = col[i];
 }
+void Cube::getColor(int no,GLfloat col[])
+{
+	for (int i = 0; i < 3; i++)
+		col[i] = color[no][i];
+}
 void Cube::getPoints(float lattice[24][3])
 {
 	for (int i = 0; i < 6; ++i)

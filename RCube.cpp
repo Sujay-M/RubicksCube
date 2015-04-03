@@ -2,7 +2,7 @@
 #include "RCube.hpp"
 #include "transformations.h"
 GLfloat Color[6][3] = {{1,0,0},{0,1,0},{0,0,1},{1,1,0},{1,0,1},{1,1,1}};
-
+int flag = 1;
 RCube::RCube()
 {
 	return;
@@ -12,28 +12,7 @@ RCube::RCube(int SqMsize,int s)
 {
 	init(SqMsize,s);
 }
-void RCube::initFaceMap()
-{
-	for (int i = 0, counter = 0; i < n; ++i)
-		for(int j=0;j<n;j++)
-			faceBlocks[0][counter++] = cubeBlockNo[i][j][0];
-	for (int i = 0, counter = 0; i < n; ++i)
-		for(int j=0;j<n;j++)
-			faceBlocks[1][counter++] = cubeBlockNo[i][j][n-1];
-	for (int i = 0, counter = 0; i < n; ++i)
-		for(int j=0;j<n;j++)
-			faceBlocks[2][counter++] = cubeBlockNo[i][n-1][j];
-	for (int i = 0, counter = 0; i < n; ++i)
-		for(int j=0;j<n;j++)
-			faceBlocks[3][counter++] = cubeBlockNo[i][0][j];
-	for (int i = 0, counter = 0; i < n; ++i)
-		for(int j=0;j<n;j++)
-			faceBlocks[4][counter++] = cubeBlockNo[n-1][i][j];
-	for (int i = 0, counter = 0; i < n; ++i)
-		for(int j=0;j<n;j++)
-			faceBlocks[5][counter++] = cubeBlockNo[0][i][j];
 
-}
 void RCube::initializeCubes()
 {
 	int counter =0;int sub=n/2;
@@ -89,8 +68,6 @@ void RCube::init(int SqMsize,int s)
 	size =s;
 	n = SqMsize;
 	int no = (2*n+2*(n-2))*(n-2)+2*n*n;
-	for(int i=0;i<6;i++)
-		faceBlocks[i] = new int[n*n];
 	/* creating a map for the blocks in 3d space (cubeBlockNo)*/
 	cubeBlockNo = new int**[n];
 	for (int i = 0; i < n; ++i)
@@ -103,7 +80,14 @@ void RCube::init(int SqMsize,int s)
 	initializeCubes();
 	
 	/*setting Color for cube faces*/
-
+	for (int i = 0; i < no; ++i)
+	{
+		for (int j = 0; j < 6; ++j)
+		{
+			blocks[i].setColor(j,Color[j]);
+		}
+	}
+	/*
 	for (int i = 0, counter = 0; i < n; ++i)
 		for(int j=0;j<n;j++)
 			blocks[cubeBlockNo[i][j][0]].setColor(0,Color[0]);
@@ -122,7 +106,7 @@ void RCube::init(int SqMsize,int s)
 	for (int j = 0, counter = 0; j < n; ++j)
 		for(int k=0;k<n;k++)
 			blocks[cubeBlockNo[0][j][k]].setColor(5,Color[5]);
-	initFaceMap();
+	*/
 }
 
 void RCube::display(GLenum mode,int num)
@@ -135,11 +119,32 @@ void RCube::display(GLenum mode,int num)
 			blocks[i].drawOutLine(mode,i);
 		}
 	else
-		for (int i = 0; i < 9; ++i)
-		{
-			blocks[faceBlocks[num][i]].render(mode,-1);
-			blocks[faceBlocks[num][i]].drawOutLine(mode,-1);
-		}
+	{	
+			int di,dj,dk,ci,cj,ck;
+			di = !((num==4)|(num==5));
+			dj = !((num==2)|(num==3));
+			dk = !((num==0)|(num==1));
+			ci = (n-1)*(num==4);
+			cj = (n-1)*(num==2);
+			ck = (n-1)*(num==1);
+			for (int i = 0; i < n; ++i)
+			{
+				for (int j = 0; j < n; ++j)
+				{
+					if(flag&&num==0)
+					{
+						cout<<cubeBlockNo[di*i+(!di)*ci][dj*dk*i+(!dk)*dj*j+(!dj)*cj][dk*j+(!dk)*ck]<<endl;
+						
+					}
+					
+					blocks[cubeBlockNo[di*i+(!di)*ci][dj*dk*i+(!dk)*dj*j+(!dj)*cj][dk*j+(!dk)*ck]].render(mode,-1);
+					blocks[cubeBlockNo[di*i+(!di)*ci][dj*dk*i+(!dk)*dj*j+(!dj)*cj][dk*j+(!dk)*ck]].drawOutLine(mode,-1);
+				}
+
+			}
+			flag = 0;
+			
+	}	
 	outLine.drawOutLine(mode,no,TRUE);
 	if(mode==GL_SELECT)
 		outLine.drawOutLine(mode,no,TRUE);
@@ -157,11 +162,24 @@ void RCube::rotFace(int sel[],int num,int faceB[],int fc)
 	{
 	for (i = 0; i < 6; ++i)
 	{
-		int check = 0;
-		for (j = 0; j < 9; ++j)
-			for (k = 0; k < num; ++k)
-				if(faceBlocks[i][j]==sel[k])
-					check++;
+		int di,dj,dk,ci,cj,ck;
+			di = !((i==4)|(i==5));
+			dj = !((i==2)|(i==3));
+			dk = !((i==0)|(i==1));
+			ci = (n-1)*(i==4);
+			cj = (n-1)*(i==2);
+			ck = (n-1)*(i==1);
+			int check = 0;
+			for (int a = 0; a < n; ++a)
+			{
+				for (int b = 0; b < n; ++b)
+				{
+					for (k = 0; k < num; ++k)
+						if(cubeBlockNo[di*a+(!di)*ci][dj*dk*a+(!dk)*dj*b+(!dj)*cj][dk*b+(!dk)*ck]==sel[k])
+							check++;
+				}
+			}	
+					
 		if(check==num)
 		{
 			f[count++] = i;
@@ -184,18 +202,29 @@ void RCube::rotFace(int sel[],int num,int faceB[],int fc)
 		if(cubeBlockNo[di*i+ci][dj*i+cj][dk*i+ck]!=sel[i])
 			break;
 	if(i<num)
-		clk = FALSE;
+	{
+		if(ci==0 && cj==0 && ck==n-1)
+			clk = TRUE;
+		else
+			clk = FALSE;
+	}
 	else
-		clk = TRUE;
+	{
+		if(ci==0 && cj==0 && ck==n-1)
+			clk = FALSE;
+		else
+			clk = TRUE;
+	}
 	int face = (finalf==f[0])?f[1]:f[0];
-	cout<<"face = "<<face<<" rotation clk = "<<clk<<endl;
-	rotateFace(face,clk);
+	cout<<"i = "<<i<<"face = "<<face<<" rotation clk = "<<clk<<endl;
+	if (face!=-1)
+		rotateFace(face,0);
 	}	
 }
 void rotateMatrix(int **mat,int rev,int n)
 {
 	int i,j,k;
-	if(rev==1)
+	if(rev==0)
 	{	
 		for (k = 0; k < n/2; k++)
 		{
@@ -234,115 +263,72 @@ void rotateMatrix(int **mat,int rev,int n)
 		}
 	}
 }
+
 void RCube::rotateFace(int face,bool clockWise)
 {
 	float affine[4][4];
-	int **temp = new int*[n];
+	float ****col = new float***[n];
+	int **temp1 = new int*[n];
+	int **temp2 = new int*[n];
+	int rotOrder[6][4] = {{3,5,2,4},{3,4,2,5},{5,1,4,0},{4,0,5,1},{3,0,2,1},{3,1,2,0}};
 	for (int i = 0; i < n; ++i)
-		temp[i] = new int[n];
+	{
+		temp1[i] = new int[n];	
+		temp2[i] = new int[n];
+		col[i] = new float**[n];
+		for (int j = 0; j < n; ++j)
+		{
+			col[i][j] = new float*[4];
+			for (int k = 0; k < 4; ++k)
+				col[i][j][k] = new float[3];
+		}
+		 
+	}
 	switch(face)
 	{
 		case 0:
 			for (int i = 0; i < n; ++i)
 				for(int j=0;j<n;j++)
-					temp[i][j] = cubeBlockNo[i][j][0];
-			if(clockWise)
-			{				
-				rotMatrix(90,0,affine);
-				rotateMatrix(temp,0,n);
-				
-			}			
-			else
-			{
-				rotMatrix(-90,0,affine);
-				rotateMatrix(temp,1,n);
-			}
-			for (int i = 0; i < n; ++i)
-				for(int j=0;j<n;j++)
-					cubeBlockNo[i][j][0] = temp[i][j];
+					temp2[i][j] = temp1[i][j] = cubeBlockNo[i][j][0];
 			break;
 		case 1:
 			for (int i = 0; i < n; ++i)
 				for(int j=0;j<n;j++)
-					temp[i][j] = cubeBlockNo[i][j][n-1];
-			if(clockWise)
-			{
-				rotMatrix(-90,0,affine);
-				rotateMatrix(temp,0,n);
-			}
-			else
-			{
-				rotMatrix(90,0,affine);
-				rotateMatrix(temp,1,n);
-			}
-			for (int i = 0; i < n; ++i)
-				for(int j=0;j<n;j++)
-					cubeBlockNo[i][j][n-1] = temp[i][j];
+					temp2[i][j] = temp1[i][j] = cubeBlockNo[i][j][n-1];
+			
 			break;
 		case 2:
 			for (int i = 0; i < n; ++i)
 				for(int j=0;j<n;j++)
-					temp[i][j] = cubeBlockNo[i][n-1][j];
-			if(clockWise)
-			{
-				rotMatrix(90,1,affine);
-				rotateMatrix(temp,0,n);
-			}
-			else
-			{
-				rotMatrix(-90,1,affine);
-				rotateMatrix(temp,1,n);
-			}
-			for (int i = 0; i < n; ++i)
-				for(int j=0;j<n;j++)
-					cubeBlockNo[i][n-1][j] = temp[i][j];
+					temp2[i][j] = temp1[i][j] = cubeBlockNo[i][n-1][j];
+			
 			break;
 		case 3:
 			for (int i = 0; i < n; ++i)
 				for(int j=0;j<n;j++)
-					temp[i][j] = cubeBlockNo[i][0][j];
-			if(clockWise)
-			{
-				rotMatrix(90,1,affine);
-				rotateMatrix(temp,0,n);
-			}
-			else
-			{
-				rotMatrix(-90,1,affine);
-				rotateMatrix(temp,1,n);
-			}
-			for (int i = 0; i < n; ++i)
-				for(int j=0;j<n;j++)
-					cubeBlockNo[i][0][j] = temp[i][j];
+					temp2[i][j] = temp1[i][j] = cubeBlockNo[i][0][j];			
 			break;
 		case 4:
-			if(clockWise)
-			{
-				rotMatrix(-90,2,affine);
-				rotateMatrix(cubeBlockNo[0],1,n);
-			}
-			else
-			{
-				rotMatrix(90,2,affine);
-				rotateMatrix(cubeBlockNo[0],0,n);
-			}
+			for (int i = 0; i < n; ++i)
+				for(int j=0;j<n;j++)
+					temp2[i][j] = temp1[i][j] = cubeBlockNo[n-1][i][j];
 			break;
 		case 5:
-			if(clockWise)
-			{
-				rotMatrix(90,2,affine);
-				rotateMatrix(cubeBlockNo[n-1],0,n);
-			}
-			else
-			{
-				rotMatrix(-90,2,affine);
-				rotateMatrix(cubeBlockNo[n-1],1,n);
-			}
+			for (int i = 0; i < n; ++i)
+				for(int j=0;j<n;j++)
+					temp2[i][j] = temp1[i][j] = cubeBlockNo[0][i][j];
 			break;
-	}
-
-	for (int i = 0; i < 9; ++i)
-		blocks[faceBlocks[face][i]].rotate(affine);
-	//change codeblocknum and face map
-	initFaceMap();
+	}				
+	rotateMatrix(temp1,clockWise,n);
+	for (int i = 0; i < n; ++i)
+		for (int j = 0; j < n; ++j)
+			for (int k = 0; k < 4; ++k)
+				blocks[temp1[i][j]].getColor(rotOrder[face][k],col[i][j][k]);
+	for (int i = 0; i < n; ++i)
+		for (int j = 0; j < n; ++j)
+			for (int k = 0; k < 4; ++k)
+				if(clockWise)
+					blocks[temp2[i][j]].setColor(rotOrder[face][(k+1)%4],col[i][j][k]);
+				else
+					blocks[temp2[i][j]].setColor(rotOrder[face][(3+k)%4],col[i][j][k]);		
 }
