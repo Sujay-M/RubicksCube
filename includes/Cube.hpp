@@ -1,3 +1,5 @@
+#ifndef _CUBE
+#define _CUBE
 #include <GL/glut.h>
 #include "Points.hpp"
 class Cube
@@ -17,5 +19,6 @@ class Cube
 		void render(GLenum,int);
 		void drawOutLine(GLenum,int,bool numberFace=FALSE);
 		void getPoints(float[24][3]);
-		void rotate(float[4][4]);
+		void transform(float[4][4]);
 };
+#endif

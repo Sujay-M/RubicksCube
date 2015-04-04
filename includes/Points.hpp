@@ -1,3 +1,5 @@
+#ifndef _POINTS
+#define _POINTS
 #include <GL/glut.h>
 # include <iostream>
 using namespace std;
@@ -13,3 +15,4 @@ class Points
 		void getPoint(GLfloat[]);
 		void setPoint(GLfloat[]);
 };
+#endif

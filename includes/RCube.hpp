@@ -1,3 +1,5 @@
+#ifndef _RCUBE
+#define _RCUBE
 #include <GL/glut.h>
 #include "Cube.hpp"
 class RCube
@@ -12,6 +14,7 @@ class RCube
 		void display(GLenum,int);
 		void initializeCubes();
 		void getBlockPts(float[24][3],int);
-		void rotFace(int[],int,int[],int);
+		void initRotateFace(int[],int,int[],int);
 		void rotateFace(int,bool);
 };
+#endif

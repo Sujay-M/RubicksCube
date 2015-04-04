@@ -1,16 +1,33 @@
-RC : main.o RCube.o Cube.o Points.o
-	g++ -o RC main.o RCube.o transformations.o Structs.o Cube.o Points.o -lfreeglut -lglu32 -lopengl32
-main.o : main.cpp RCube.o Structs.o
-	g++ -c -o main.o main.cpp
-RCube.o : RCube.cpp Cube.o transformations.o
-	g++ -c -o RCube.o RCube.cpp
-transformations.o : transformations.cpp
-	g++ -c -o transformations.o transformations.cpp
-Structs.o : Structs.cpp
-	g++ -c -o Structs.o Structs.cpp
-Cube.o : Cube.cpp Points.o
-	g++ -c -o Cube.o Cube.cpp
-Points.o : Points.cpp
-	g++ -c -o Points.o Points.cpp
+BIN = .\bin
+INCLUDE = .\includes
+SOURCE = .\src
+BUILD = .\build
+OBJECTS = $(BUILD)\main.o $(BUILD)\RCube.o $(BUILD)\Structs.o $(BUILD)\mouseHelper.o \
+	$(BUILD)\displayHelper.o $(BUILD)\Cube.o $(BUILD)\Points.o
+LIBS = -lfreeglut -lglu32 -lopengl32
+$(BIN)\RC : $(OBJECTS)
+	g++ -I $(INCLUDE) -o $(BIN)\RC $(OBJECTS) $(LIBS)
+
+$(BUILD)\main.o : $(INCLUDE)\RCube.hpp $(INCLUDE)\Structs.h $(INCLUDE)\mouseHelper.h $(INCLUDE)\displayHelper.h
+	g++ -I $(INCLUDE) -c -o $(BUILD)\main.o $(SOURCE)\main.cpp
+
+$(BUILD)\RCube.o : $(INCLUDE)\Cube.hpp
+	g++ -I $(INCLUDE) -c -o $(BUILD)\RCube.o $(SOURCE)\RCube.cpp
+
+$(BUILD)\Structs.o : $(INCLUDE)\Structs.h
+	g++ -I $(INCLUDE) -c -o $(BUILD)\Structs.o $(SOURCE)\Structs.cpp
+
+$(BUILD)\displayHelper.o : $(INCLUDE)\displayHelper.h
+	g++ -I $(INCLUDE) -c -o $(BUILD)\displayHelper.o $(SOURCE)\displayHelper.cpp
+
+$(BUILD)\mouseHelper.o : $(INCLUDE)\mouseHelper.h
+	g++ -I $(INCLUDE) -c -o $(BUILD)\mouseHelper.o $(SOURCE)\mouseHelper.cpp
+
+$(BUILD)\Cube.o : $(INCLUDE)\Points.hpp
+	g++ -I $(INCLUDE) -c -o $(BUILD)\Cube.o $(SOURCE)\Cube.cpp
+
+$(BUILD)\Points.o :
+	g++ -I $(INCLUDE) -c -o $(BUILD)\Points.o $(SOURCE)\Points.cpp
+
 clean :
-	rm RC.exe main.o RCube.o Cube.o Points.o Structs.o transformations.o
+	rm $(BIN)\RC.exe $(OBJECTS)

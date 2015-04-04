@@ -1,4 +1,3 @@
-#include <GL/glut.h>
 #include "RCube.hpp"
 #include "transformations.h"
 GLfloat Color[6][3] = {{1,0,0},{0,1,0},{0,0,1},{1,1,0},{1,0,1},{1,1,1}};
@@ -120,7 +119,7 @@ void RCube::getBlockPts(float pts[24][3],int num)
 	blocks[num].getPoints(pts);
 }
 
-void RCube::rotFace(int sel[],int num,int faceB[],int fc)
+void RCube::initRotateFace(int sel[],int num,int faceB[],int fc)
 {
 	int f[2] = {-1,-1},count=0,finalf=-1;
 	int i,j,k,l,final=-1;

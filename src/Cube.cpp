@@ -1,6 +1,4 @@
-#include <GL/glut.h>
 #include "Cube.hpp"
-// #include "Points.hpp"
 
 Cube::Cube()
 {
@@ -119,7 +117,7 @@ void Cube::getPoints(float lattice[24][3])
 		for (int j = 0; j < 4; ++j)
 			face[i][j].getPoint(lattice[i*4+j]);
 }
-void Cube::rotate(float affine[4][4])
+void Cube::transform(float affine[4][4])
 {
 	for (int i = 0; i < 6; ++i)
 		for(int j=0;j<4;j++)
