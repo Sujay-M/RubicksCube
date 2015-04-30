@@ -82,44 +82,51 @@ void RCube::init(int SqMsize,int s)
 			blocks[i].setColor(j,Color[j]);
 }
 
-void RCube::display(GLenum mode,int num)
+void RCube::display(GLenum mode,int num,int flag)
 {
 	int no = (2*n+2*(n-2))*(n-2)+2*n*n;
 	if (num==-1)
+	{
 		for (int i = 0; i < no; ++i)
-		{
 			blocks[i].render(mode,i);
-			blocks[i].drawOutLine(mode,i);
-		}
+		if(mode==GL_SELECT)
+			for (int i = 0; i < 6; ++i)
+				outLine.drawFace(no,i);
+	}
 	else
 	{	
-			int di,dj,dk,ci,cj,ck;
-			di = !((num==4)|(num==5));
-			dj = !((num==2)|(num==3));
-			dk = !((num==0)|(num==1));
-			ci = (n-1)*(num==4);
-			cj = (n-1)*(num==2);
-			ck = (n-1)*(num==1);
-			for (int i = 0; i < n; ++i)
+		int di,dj,dk,ci,cj,ck;
+		int *render = new int[no];
+		for (int i = 0; i < no; ++i)
+			render[i] = 0;
+		di = !((num==4)|(num==5));
+		dj = !((num==2)|(num==3));
+		dk = !((num==0)|(num==1));
+		ci = (n-1)*(num==4);
+		cj = (n-1)*(num==2);
+		ck = (n-1)*(num==1);
+		for (int i = 0; i < n; ++i)
+			for (int j = 0; j < n; ++j)	
 			{
-				for (int j = 0; j < n; ++j)
-				{	
-					blocks[cubeBlockNo[di*i+(!di)*ci][dj*dk*i+(!dk)*dj*j+(!dj)*cj][dk*j+(!dk)*ck]].render(mode,-1);
-					blocks[cubeBlockNo[di*i+(!di)*ci][dj*dk*i+(!dk)*dj*j+(!dj)*cj][dk*j+(!dk)*ck]].drawOutLine(mode,-1);
-				}
+				int temp = cubeBlockNo[di*i+(!di)*ci][dj*dk*i+(!dk)*dj*j+(!dj)*cj][dk*j+(!dk)*ck];
+				render[temp] = 1;
+				
+			}
+		for (int i = 0; i < no; ++i)
+			if(flag==1 && render[i]==1)
+				blocks[i].render(mode,i);
+			else if(flag==0 && render[i]==0)
+				blocks[i].render(mode,i);
+		if(mode==GL_SELECT)
+			outLine.drawFace(no,num);			
+	}
 
-			}			
-	}	
-	outLine.drawOutLine(mode,no,TRUE);
-	if(mode==GL_SELECT)
-		outLine.drawOutLine(mode,no,TRUE);
 }
 void RCube::getBlockPts(float pts[24][3],int num)
 {
 	blocks[num].getPoints(pts);
 }
-
-void RCube::initRotateFace(int sel[],int num,int faceB[],int fc)
+int RCube::initRotateFace(int sel[],int num,int faceB[],int fc,int &selectedFace)
 {
 	int f[2] = {-1,-1},count=0,finalf=-1;
 	int i,j,k,l,final=-1;
@@ -205,8 +212,18 @@ void RCube::initRotateFace(int sel[],int num,int faceB[],int fc)
 	}
 	cout<<"i = "<<i<<"face = "<<face<<" rotation clk = "<<clk<<endl;
 	if (face!=-1)
-		rotateFace(face,clk);
-	}	
+	{
+		selectedFace = face;
+		return clk;
+	}
+	// {
+
+	// 	animate(face,clk);
+	// 	rotateFace(face,clk);
+	// }
+	}
+	selectedFace = -1;
+	return -1;	
 }
 void rotateMatrix(int **mat,int rev,int n)
 {
@@ -257,7 +274,7 @@ void RCube::rotateFace(int face,bool clockWise)
 	float ****col = new float***[n];
 	int **temp1 = new int*[n];
 	int **temp2 = new int*[n];
-	int rotOrder[6][4] = {{3,5,2,4},{3,4,2,5},{5,1,4,0},{4,0,5,1},{3,0,2,1},{3,1,2,0}};
+	int rotOrder[6][4] = {{3,5,2,4},{3,4,2,5},{5,1,4,0},{4,1,5,0},{3,0,2,1},{3,1,2,0}};
 	int noRotate[6][2] = {{0,1},{0,1},{2,3},{2,3},{4,5},{4,5}};
 	for (int i = 0; i < n; ++i)
 	{
@@ -277,12 +294,13 @@ void RCube::rotateFace(int face,bool clockWise)
 		case 0:
 			for (int i = 0; i < n; ++i)
 				for(int j=0;j<n;j++)
-					temp2[i][j] = temp1[i][j] = cubeBlockNo[i][j][0];
+					temp2[j][i] = temp1[j][i] = cubeBlockNo[n-1-i][j][0];
 			break;
 		case 1:
+
 			for (int i = 0; i < n; ++i)
 				for(int j=0;j<n;j++)
-					temp2[i][j] = temp1[i][j] = cubeBlockNo[i][j][n-1];
+					temp2[j][i] = temp1[j][i] = cubeBlockNo[i][j][n-1];
 			
 			break;
 		case 2:
@@ -292,15 +310,14 @@ void RCube::rotateFace(int face,bool clockWise)
 			
 			break;
 		case 3:
-			clockWise = !clockWise;
 			for (int i = 0; i < n; ++i)
 				for(int j=0;j<n;j++)
-					temp2[i][j] = temp1[i][j] = cubeBlockNo[i][0][j];			
+					temp2[i][j] = temp1[i][j] = cubeBlockNo[n-1-i][0][j];			
 			break;
 		case 4:
 			for (int i = 0; i < n; ++i)
 				for(int j=0;j<n;j++)
-					temp2[i][j] = temp1[i][j] = cubeBlockNo[n-1][i][j];
+					temp2[i][j] = temp1[i][j] = cubeBlockNo[n-1][i][n-1-j];
 			break;
 		case 5:
 			for (int i = 0; i < n; ++i)

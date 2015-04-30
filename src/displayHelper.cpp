@@ -53,6 +53,33 @@ void displayText(State &state)
 	}
 
 }
+void animate(State &state)
+{
+	float mat[16];
+	state.dir = (state.dir==1)?1:-1;
+	float axis[6][3] = {{1,0,0},{-1,0,0},{0,1,0},{0,-1,0},{0,0,1},{0,0,-1}};
+	glGetFloatv(GL_MODELVIEW_MATRIX, mat);
+	glPushMatrix();
+	Points temp;
+	float tempAxis[3];
+	temp.setPoint(axis[state.selectedF]);
+	state.setCur(mat);
+	temp*state.curMat;
+	temp.getPoint(tempAxis);	
+	glLoadIdentity();
+	glRotatef(state.angle,state.dir*tempAxis[0],state.dir*tempAxis[1],state.dir*tempAxis[2]);
+	glMultMatrixf(mat);
+	state.c.display(GL_RENDER,state.selectedF);
+	glPopMatrix();
+	state.angle++;
+	if(state.angle==90)
+	{
+		state.rotation = FALSE;
+		state.dir = (state.dir==1)?1:0;
+		state.c.rotateFace(state.selectedF,state.dir);
+	}
+	
+}
 void draw(State &state)
 {
 	int *disp = new int[state.no];float pt[3];
@@ -61,7 +88,13 @@ void draw(State &state)
 	state.setCurT(mat);
 	state.axis*state.curMat;
 	state.axis.getPoint(pt);
-	state.c.display(GL_RENDER,-1);
+	if(state.rotation==TRUE)
+	{	
+		animate(state);
+		state.c.display(GL_RENDER,state.selectedF,0);
+	}
+	else
+		state.c.display(GL_RENDER,-1);
 	glPushMatrix();
 	glLoadIdentity();
 	displayText(state);

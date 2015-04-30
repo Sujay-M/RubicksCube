@@ -25,8 +25,6 @@ void mouse(int btn,int st,int x,int y)
 			state.faceRot = TRUE;
 			float px = (x-state.winW/2)*2*state.w/state.winW;
 			float py = -(y-state.winH/2)*2*state.w/state.winW;
-			// state.c.faceInfo(block,state.selFaces,state.faceCount,state.selectedF);
-			// cout<<state.selectedF<<endl;	
 		}	
 		else
 			state.faceRot = FALSE;
@@ -36,8 +34,17 @@ void mouse(int btn,int st,int x,int y)
 		state.clicked = FALSE;
 		if(state.faceRot == TRUE)
 		{
+			int face,clk;
 			state.faceRot = FALSE;
-			state.c.initRotateFace(state.selBlocks,state.index,state.selFaces,state.faceCount);
+			clk = state.c.initRotateFace(state.selBlocks,state.index,state.selFaces,state.faceCount,state.selectedF);
+			if(state.selectedF!=-1&&clk!=-1)
+			{
+				// animate(state.selectedF,clk,state);
+				cout<<"hi"<<endl;
+				state.dir = clk;
+				state.rotation = TRUE;
+				state.angle = 0;
+			}
 		}
 	}
 }
@@ -77,6 +84,7 @@ void reshape(int w,int h)
 		state.w = 320*(float)w/(float)h;
 	else
 		state.h = 240*(float)h/(float)w;
+	// glOrtho(-state.SIZE,state.SIZE,-state.SIZE,state.SIZE,-state.SIZE,state.SIZE);
 	glOrtho(-state.w,state.w,-state.h*4.0/3.0,state.h*4.0/3.0,-state.d,state.d);
 	glMatrixMode(GL_MODELVIEW);
 }
@@ -85,6 +93,7 @@ void display()
 	glMatrixMode(GL_MODELVIEW);
 	glClearColor(0,0,0,1);
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_COLOR_LOGIC_OP);
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	draw(state);
 	glFlush();

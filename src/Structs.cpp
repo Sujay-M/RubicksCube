@@ -11,8 +11,6 @@ State::State(int num) : SIZE(150)
 	faceRot = FALSE;
 	clicked = FALSE;
 	magnitude = 0;
-	float center[] = {0,0,0};
-	dummy.initialize(center,SIZE);
 	c.init(n,SIZE);
 	w = 320;
 	h = 240;
@@ -22,6 +20,8 @@ State::State(int num) : SIZE(150)
 	faceCount = 0;
 	selectedF = -1;
 	dir = 0;
+	rotation = FALSE;
+	angle = 0;
 }
 void State::setCur(float *cur)
 {

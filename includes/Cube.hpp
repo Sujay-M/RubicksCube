@@ -17,7 +17,7 @@ class Cube
 		void setLattice(GLfloat[],int);
 		void initFromLattice();
 		void render(GLenum,int);
-		void drawOutLine(GLenum,int,bool numberFace=FALSE);
+		void drawFace(int,int);
 		void getPoints(float[24][3]);
 		void transform(float[4][4]);
 };

@@ -63,6 +63,7 @@ float maxZ(float pts[24][3],State &state)
 }
 int processHT(int hits,unsigned int sb[],State &state)
 {
+	cout<<endl;
 	GLuint i,*ptr,sel;
 	ptr = (GLuint*)sb;
 	int final;
@@ -71,6 +72,7 @@ int processHT(int hits,unsigned int sb[],State &state)
 	{
 		ptr+=3;
 		sel = *ptr;
+		// cout<<"sel = "<<sel<<endl;
 		if(sel<state.no)
 		{
 			state.c.getBlockPts(pts,sel);
@@ -82,7 +84,10 @@ int processHT(int hits,unsigned int sb[],State &state)
 			}
 		}
 		else
+		{
 			state.selFaces[state.faceCount++] = sel-state.no;
+			cout<<"sel = "<<sel-state.no<<endl;
+		}
 		ptr++;
 	}
 	return final;
@@ -100,12 +105,39 @@ int check(int x,int y,State &state)
 	glPushMatrix();
 	glLoadIdentity();
 	gluPickMatrix((double)x,(double)(vp[3]-y),1,1,vp);
-	glOrtho(-state.w,state.w,-state.h,state.h,-state.d,state.d);
-	state.c.display(GL_SELECT,-1);
+	// glOrtho(-state.SIZE,state.SIZE,-state.SIZE,state.SIZE,-state.SIZE,state.SIZE);
+	glOrtho(-state.w,state.w,-state.h*4.0/3.0,state.h*4.0/3.0,-state.d,state.d);
+	float mat[16];
+	float axis[6][3] = {{-1,0,0},{1,0,0},{0,-1,0},{0,1,0},{0,0,-1},{0,0,1}};
+	glGetFloatv(GL_MODELVIEW_MATRIX, mat);
+	state.setCur(mat);
+	float maxView = 0.0;
+	int selectedFace = -1;
+	for (int i = 0; i < 6; ++i)
+	{	
+		//cout<<"i = "<<i<<endl;	
+		Points curAxis;
+		curAxis.setPoint(axis[i]);
+		// cout<<"before "<<curAxis<<endl;
+		curAxis*state.curMat;
+		// cout<<"after "<<curAxis<<endl;
+		curAxis.getPoint(axis[i]);
+		if (axis[i][2]>maxView)
+		{
+			selectedFace = i;
+			maxView = axis[i][2];
+		}
+		
+	}	
+	if(selectedFace!=-1)
+		state.c.display(GL_SELECT,selectedFace);
+
+
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 	glFlush();
 	hits = glRenderMode(GL_RENDER);
+	// cout<<"hits = "<<hits<<endl;
 	if(hits>0)
 		return processHT(hits,sb,state);
 	return -1;

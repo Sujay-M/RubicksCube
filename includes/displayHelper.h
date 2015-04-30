@@ -5,4 +5,5 @@
 void displayFaces(GLenum,State &);
 void displayText(State&);
 void draw(State&);
+void animate(int,int,State&);
 #endif
