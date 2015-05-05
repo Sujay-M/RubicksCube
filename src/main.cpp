@@ -1,3 +1,5 @@
+#include <cstdlib>
+#include <ctime>
 #include <GL/glut.h>
 #include "Structs.h"
 #include "mouseHelper.h"
@@ -5,29 +7,31 @@
 #include <iostream>
 #include <cmath>
 using namespace std;
-State state(3);
+State state;
+int MROTS = 3;
 void mouse(int btn,int st,int x,int y)
 {
 	int block;
 	int cy = 500-y;
 	if(btn == GLUT_LEFT_BUTTON && st == GLUT_DOWN)
 	{
-		checkRevert(x,y,state);
-		state.clicked = TRUE;
-		state.xp = x;
-		state.yp = cy;
-		state.faceCount = 0;
-		state.dir = 0;
-		state.index = 0;
-		if((block = check(x,y,state))!=-1)
+		if(checkRevert(x,y,state)==-1)
 		{
-			state.selBlocks[state.index++] = block;
-			state.faceRot = TRUE;
-			float px = (x-state.winW/2)*2*state.w/state.winW;
-			float py = -(y-state.winH/2)*2*state.w/state.winW;
-		}	
-		else
-			state.faceRot = FALSE;
+			state.clicked = TRUE;
+			state.xp = x;
+			state.yp = cy;
+			state.dir = 0;
+			state.index = 0;
+			if((block = check(x,y,state))!=-1)
+			{
+				state.selBlocks[state.index++] = block;
+				state.faceRot = TRUE;
+				float px = (x-state.winW/2)*2*state.w/state.winW;
+				float py = -(y-state.winH/2)*2*state.w/state.winW;
+			}	
+			else
+				state.faceRot = FALSE;
+		}
 	}
 	if(btn == GLUT_LEFT_BUTTON && st == GLUT_UP )
 	{
@@ -36,11 +40,10 @@ void mouse(int btn,int st,int x,int y)
 		{
 			int face,clk;
 			state.faceRot = FALSE;
-			clk = state.c.initRotateFace(state.selBlocks,state.index,state.selFaces,state.faceCount,state.selectedF);
+			clk = state.c->initRotateFace(state.selBlocks,state.index,state.selFace,state.selectedF);
 			if(state.selectedF!=-1&&clk!=-1)
 			{
-				// animate(state.selectedF,clk,state);
-				cout<<"hi"<<endl;
+				// animate(state.selectedF,clk,state)
 				state.dir = clk;
 				state.rotation = TRUE;
 				state.angle = 0;
@@ -95,11 +98,45 @@ void display()
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_COLOR_LOGIC_OP);
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	if(state.start==TRUE)
+	{
+		if(state.rotation==FALSE)
+		{
+			state.rotation = TRUE;
+			state.angle = 0;
+			state.selectedF = rand()%(3*state.n);
+			state.dir = rand()%2;
+			state.count++;
+		}
+		if(state.count==MROTS)
+		{
+			state.start = FALSE;
+			state.count = 0;
+		}
+	}
+	
 	draw(state);
 	glFlush();
 }
+void key(unsigned char ch,int x,int y)
+{
+	if(state.win)
+		switch(ch)
+		{
+			case 'y':
+				state.start = TRUE;
+				break;
+			case 'n':
+				exit(0);
+		}
+}
 int main(int argc, char** argv)
 {
+	int n;
+	cout<<"enter n"<<endl;
+	cin>>n;
+	state.init(n); 
+	srand(time(0));
   	glutInit(&argc, argv);
   	glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
 	glutInitWindowSize(state.winW,state.winH);
@@ -109,7 +146,7 @@ int main(int argc, char** argv)
 	glutReshapeFunc(reshape);
 	glutMouseFunc(mouse);
 	glutMotionFunc(motion);
-	// glutKeyboardFunc(key);
+	glutKeyboardFunc(key);
 	glutMainLoop();
 	return 0;
 }

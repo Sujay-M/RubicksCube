@@ -61,11 +61,9 @@ void Cube::initialize(GLfloat center[],int size)
 void Cube::render(GLenum mode, int num)
 {
 	GLfloat vertex[3];
-	if (mode == GL_SELECT)	
-	{
+	if (mode == GL_SELECT)
 		glLoadName(num);
-		// cout<<"num = "<<num<<endl;
-	}
+
 	glLineWidth(3);	
 	for(int i=0;i<6;i++)
 	{
@@ -93,7 +91,6 @@ void Cube::drawFace(int no,int num)
 	float vertex[3];
 	glColor3f(0.0,0.0,0.0);
 	glLoadName(num+no);
-	// cout<<"name = "<<num+no<<endl;
 	glBegin(GL_POLYGON);
 		for(int j=0;j<4;j++)
 		{
@@ -101,14 +98,6 @@ void Cube::drawFace(int no,int num)
 			glVertex3fv(vertex);
 		}
 	glEnd();
-	// glColor3f(0.0,0.0,0.0);
-	// 	glBegin(GL_LINE_LOOP);
-	// 	for(int j=0;j<4;j++)
-	// 	{
-	// 		face[num][j].getPoint(vertex);
-	// 		glVertex3fv(vertex);
-	// 	}
-	// 	glEnd();
 }
 void Cube::setColor(int no,GLfloat col[])
 {

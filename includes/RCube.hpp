@@ -4,7 +4,7 @@
 #include "Cube.hpp"
 class RCube
 {
-	int n,size,***cubeBlockNo,*faceBlocks[6];
+	int n,size,***cubeBlockNo,**faceBlocks;
 	Cube *blocks,outLine;
 	
 	public:
@@ -14,7 +14,9 @@ class RCube
 		void display(GLenum,int,int flag = 1);
 		void initializeCubes();
 		void getBlockPts(float[24][3],int);
-		int initRotateFace(int[],int,int[],int,int&);
+		int initRotateFace(int[],int,int,int&);
 		void rotateFace(int,bool);
+		int winCheck();
+		void initFaceblocks();
 };
 #endif

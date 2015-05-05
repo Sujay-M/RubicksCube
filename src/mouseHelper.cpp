@@ -1,5 +1,5 @@
 #include "mouseHelper.h"
-void checkRevert(int x,int y,State &state)
+int checkRevert(int x,int y,State &state)
 {
 	float initx,inity,px,py;
 	int flag=-1;
@@ -43,6 +43,7 @@ void checkRevert(int x,int y,State &state)
 			case 5:glRotatef(-90,1,0,0);break;
 		}
 	}
+	return flag;
 }
 float maxZ(float pts[24][3],State &state)
 {
@@ -61,9 +62,8 @@ float maxZ(float pts[24][3],State &state)
 	}
 	return max;
 }
-int processHT(int hits,unsigned int sb[],State &state)
+int processHT(int hits,unsigned int sb[],int selface,State &state)
 {
-	cout<<endl;
 	GLuint i,*ptr,sel;
 	ptr = (GLuint*)sb;
 	int final;
@@ -72,10 +72,9 @@ int processHT(int hits,unsigned int sb[],State &state)
 	{
 		ptr+=3;
 		sel = *ptr;
-		// cout<<"sel = "<<sel<<endl;
 		if(sel<state.no)
 		{
-			state.c.getBlockPts(pts,sel);
+			state.c->getBlockPts(pts,sel);
 			float curMax = maxZ(pts,state);
 			if(max<curMax)
 			{
@@ -85,8 +84,8 @@ int processHT(int hits,unsigned int sb[],State &state)
 		}
 		else
 		{
-			state.selFaces[state.faceCount++] = sel-state.no;
-			cout<<"sel = "<<sel-state.no<<endl;
+			if(selface==(sel-state.no))
+				state.selFace = sel-state.no;
 		}
 		ptr++;
 	}
@@ -115,12 +114,9 @@ int check(int x,int y,State &state)
 	int selectedFace = -1;
 	for (int i = 0; i < 6; ++i)
 	{	
-		//cout<<"i = "<<i<<endl;	
 		Points curAxis;
 		curAxis.setPoint(axis[i]);
-		// cout<<"before "<<curAxis<<endl;
 		curAxis*state.curMat;
-		// cout<<"after "<<curAxis<<endl;
 		curAxis.getPoint(axis[i]);
 		if (axis[i][2]>maxView)
 		{
@@ -130,16 +126,14 @@ int check(int x,int y,State &state)
 		
 	}	
 	if(selectedFace!=-1)
-		state.c.display(GL_SELECT,selectedFace);
-
+		state.c->display(GL_SELECT,selectedFace);
 
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 	glFlush();
 	hits = glRenderMode(GL_RENDER);
-	// cout<<"hits = "<<hits<<endl;
 	if(hits>0)
-		return processHT(hits,sb,state);
+		return processHT(hits,sb,selectedFace,state);
 	return -1;
 }
 void getAxis(int dx1,int dy1,float pt[],State &state)
